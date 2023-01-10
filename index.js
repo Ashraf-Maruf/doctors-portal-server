@@ -47,7 +47,7 @@ async function run() {
         const usersCollection = client.db('doctorsPortal').collection('users')
         const doctorsCollection = client.db('doctorsPortal').collection('doctors')
         const userContactCollection = client.db('doctorsPortal').collection('usermessage')
-        
+
         // This is VerifyAdmin section start
 
         const verifyAdmin = async (req, res, next) => {
@@ -86,7 +86,7 @@ async function run() {
             const query = {}
             const result = await appointmentOptionCollection.find(query).project({ name: 1 }).toArray();
             res.send(result);
-        })        
+        })
 
         app.get('/bookings', verifyJWT, async (req, res) => {
             const email = req.query.email;
@@ -100,8 +100,8 @@ async function run() {
 
         })
 
-        app.get('/contact', async (req, res) =>{
-            const query ={}
+        app.get('/contact', async (req, res) => {
+            const query = {}
             const result = await userContactCollection.find(query).toArray()
             res.send(result)
         })
@@ -118,7 +118,7 @@ async function run() {
             const query = { email: email };
             const user = await usersCollection.findOne(query)
             if (user) {
-                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '7d' })
                 return res.send({ accessToken: token });
             }
             res.status(403).send({ accessToken: '' })
@@ -143,11 +143,11 @@ async function run() {
             res.send(doctors);
         })
 
-         // This is Get section end
+        // This is Get section end
 
         // This is Post section start
 
-        app.post('/contact', async (req, res) =>{
+        app.post('/contact', async (req, res) => {
             const contact = req.body
             const result = await userContactCollection.insertOne(contact)
             res.send(result)
@@ -173,7 +173,7 @@ async function run() {
             const user = req.body;
             const result = await usersCollection.insertOne(user);
             res.send(result);
-        })        
+        })
 
         app.post('/create-payment-intent', async (req, res) => {
             const booking = req.body;
@@ -190,7 +190,7 @@ async function run() {
                 clientSecret: paymentIntent.client_secret,
             });
         })
-       
+
         app.post('/doctors', verifyJWT, verifyAdmin, async (req, res) => {
             const doctor = req.body;
             const result = await doctorsCollection.insertOne(doctor);
